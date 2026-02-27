@@ -1,409 +1,298 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق ألسلام المطور - الأستاذة نضيمة</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --primary-gold: #c5a059;
-            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #c5a059 50%, #b8860b 100%);
-            --green-gradient: linear-gradient(135deg, #1a472a 0%, #2a633d 100%);
-            --deep-green: #1a472a;
-            --soft-bg: #f4f7f2;
-            --white: #ffffff;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            --btn-shadow: 0 4px 15px rgba(197, 160, 89, 0.4);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تطبيق ألسلام - القاعدة النورانية</title>
 
-        body { margin: 0; padding: 0; background-color: var(--soft-bg); font-family: 'Tajawal', sans-serif; color: #333; user-select: none; overflow-x: hidden; }
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        /* --- حاوية الصندوق والصورة --- */
-        .host-container { position: relative; margin-top: 60px; padding: 0 10px; }
-        .host-image { width: 120px; height: 120px; position: absolute; top: -60px; left: 50%; transform: translateX(-50%); z-index: 5; filter: drop-shadow(0 5px 15px rgba(197, 160, 89, 0.3)); }
-        .host-box { background: var(--white); padding: 70px 25px 25px; border-radius: 30px; border: 2px solid var(--primary-gold); box-shadow: var(--card-shadow); text-align: center; position: relative; line-height: 1.8; }
-        .host-name { display: block; font-family: 'Amiri', serif; font-size: 28px; font-weight: 700; color: var(--primary-gold); margin-bottom: 10px; }
-        .dua-text { font-size: 15px; color: #555; border-top: 1px solid #f0f0f0; padding-top: 15px; margin-top: 10px; }
+<style>
+:root{
+--green:#1f6f43;
+--green-dark:#134b2e;
+--gold:#c9a44c;
+--bg:#f3f6f3;
+}
+body{
+margin:0;
+background:var(--bg);
+font-family:'Tajawal';
+color:#333
+}
+.app-page{
+display:none;
+padding:20px;
+padding-bottom:130px;
+min-height:100vh
+}
+.active-page{display:block}
+.card{
+background:#fff;
+border-radius:22px;
+padding:20px;
+margin-bottom:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.08)
+}
+.center{text-align:center}
+.bottom-nav{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+width:95%;
+max-width:520px;
+background:#fff;
+display:flex;
+justify-content:space-around;
+border-radius:30px;
+padding:10px;
+box-shadow:0 10px 25px rgba(0,0,0,.12)
+}
+.nav-item{
+padding:10px;
+cursor:pointer;
+color:#777;
+font-size:14px
+}
+.nav-item.active{
+background:linear-gradient(135deg,var(--green),var(--green-dark));
+color:#fff;
+border-radius:20px
+}
+.chat-container{
+height:300px;
+overflow-y:auto;
+background:#f9f9f9;
+border-radius:15px;
+padding:10px;
+margin-bottom:10px
+}
+.input-soft{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #ccc;
+margin-top:8px
+}
+button{
+cursor:pointer;
+border:none
+}
+.lesson-btn{
+width:100%;
+padding:12px;
+border-radius:12px;
+background:linear-gradient(135deg,var(--green),var(--green-dark));
+color:#fff;
+margin-top:10px;
+font-size:16px
+}
 
-        /* --- واجهة الدردشة (المجيب الآلي) --- */
-        #chat-container { height: 60vh; overflow-y: auto; background: #fff; border-radius: 20px; padding: 15px; margin-top: 10px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 10px; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
-        .bot-msg { align-self: flex-start; background: #e8f5e9; color: var(--deep-green); border-bottom-right-radius: 2px; }
-        .user-msg { align-self: flex-end; background: var(--gold-gradient); color: white; border-bottom-left-radius: 2px; }
-        
-        .chat-input-area { display: flex; gap: 8px; margin-top: 15px; }
-        .chat-input-area input { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid var(--primary-gold); outline: none; }
-        .chat-send-btn { background: var(--green-gradient); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; }
-
-        /* --- الزينة والأقسام --- */
-        .app-page { display: none; padding: 20px; padding-bottom: 120px; animation: slideUp 0.5s ease; }
-        .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--white); display: none; justify-content: space-around; align-items: center; padding: 10px 5px; box-shadow: 0 15px 35px rgba(26, 71, 42, 0.15); border-radius: 25px; z-index: 1000; border: 1px solid rgba(197, 160, 89, 0.2); }
-        .nav-item { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border-radius: 20px; color: #888; transition: 0.4s; cursor: pointer; }
-        .nav-item.active { background: var(--green-gradient); color: var(--white); }
-        .nav-item span { display: none; font-size: 13px; font-weight: 700; }
-        .nav-item.active span { display: inline-block; }
-
-        .landing-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(rgba(26,71,42,0.9), rgba(26,71,42,0.9)), url('https://www.transparenttextures.com/patterns/islamic-art.png'); color: white; text-align: center; }
-        #memorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 1s; }
-        .btn-luxury { background: var(--gold-gradient); color: white; border: none; padding: 12px 40px; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; }
-    </style>
+/* الملف الشخصي */
+.profile-img{
+width:110px;
+height:110px;
+border-radius:50%;
+background:#eee;
+margin:10px auto;
+overflow:hidden;
+border:3px solid var(--gold)
+}
+.profile-img img{
+width:100%;
+height:100%;
+object-fit:cover
+}
+</style>
 </head>
+
 <body>
 
-    <div id="memorial-overlay">
-        <div style="background: white; padding: 40px 20px; border-radius: 30px; text-align: center; max-width: 85%; border-top: 5px solid var(--primary-gold);">
-            <h3 style="font-family: 'Amiri';">﴿ كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ ﴾</h3>
-            <p>وقف على روح المرحوم <b>(سلام عبدلله جاسم)</b><br>وعن جميع موتى المسلمين.</p>
-        </div>
-    </div>
+<div id="main-content">
 
-    <div id="landing" class="landing-screen">
-        <h1 style="font-family: 'Amiri', serif; font-size: 42px;">تطبيق ألسلام</h1>
-        <button class="btn-luxury" onclick="enterApp()">دخول التطبيق</button>
-    </div>
+<!-- الرئيسية -->
+<div id="home" class="app-page active-page">
+<div class="card center">
+<h2 style="font-family:Amiri;color:var(--green)">تطبيق ألسلام</h2>
+<p style="font-family:Amiri;font-size:18px">﴿ وَقُل رَّبِّ زِدْنِي عِلْمًا ﴾</p>
+<p>
+مرحبًا بك في <b>تطبيق القاعدة النورانية</b> 🌿  
+<br>لتعليم قراءة القرآن الكريم بطريقة صحيحة.
+</p>
+<hr>
+<p style="font-size:14px;line-height:1.8">
+تم تصميم وبرمجة التطبيق من قبل  
+<br><b>علي سلام عبدلله</b>  
+<br>وقفًا على روح المرحوم  
+<br><b>سلام عبدلله جاسم</b>  
+<br>وعلى أرواح جميع موتى المسلمين 🤍
+</p>
+<p style="font-size:14px">
+👩‍🏫 مدرسة التطبيق: <b>نضيمة مهيدي صالح</b>
+</p>
+</div>
+</div>
 
-    <div id="home" class="app-page">
-        <h2 style="font-family: 'Amiri', serif; color: var(--deep-green); text-align: center; margin-top: 20px;">رمضان مبارك</h2>
-        <div class="host-container" style="margin-top: 80px;">
-            <img src="https://f.top4top.io/p_3707qsxv90.png" class="host-image">
-            <div class="host-box">
-                <span class="host-name">نضيمة مهيدي صالح</span>
-                <p class="dua-text">تقبل الله منا ومنكم صالح الأعمال.</p>
-            </div>
-        </div>
-    </div>
+<!-- القاعدة النورانية -->
+<div id="noorania" class="app-page">
+<div class="card">
+<h2 class="center" style="font-family:Amiri;color:var(--green)">📘 القاعدة النورانية</h2>
+<p class="center">بإشراف المدرسة: <b>نضيمة مهيدي صالح</b></p>
 
-    <div id="noor" class="app-page">
-        <h2 style="text-align: center; font-family: 'Amiri';">القاعدة النورانية</h2>
-        <p style="text-align: center;">قريباً سيتم إضافة الدروس هنا...</p>
-    </div>
+<div class="card">
+<h3>الدرس الأول: الحروف الهجائية</h3>
+<p class="center" style="font-size:20px;line-height:2">
+ا ب ت ث ج ح خ  
+د ذ ر ز س ش  
+ص ض ط ظ ع غ  
+ف ق ك ل م ن  
+هـ و ي
+</p>
+<button class="lesson-btn" onclick="startQuiz()">إكمال الدرس</button>
+</div>
 
-    <div id="ask" class="app-page">
-        <div style="text-align: center; margin-bottom: 15px;">
-            <img src="https://i.top4top.io/p_37073dqfn5.png" style="width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary-gold);">
-            <h3 style="margin: 5px 0; color: var(--deep-green); font-family: 'Amiri';">الأستاذة نضيمة</h3>
-            <p style="font-size: 12px; color: #777;">أنا هنا للإجابة على أسئلتكم العامة</p>
-        </div>
+<div class="card">
+<h3>الدرس الثاني: الحروف المركبة</h3>
+<p class="center" style="font-size:20px">
+با بو بي | تا تو تي | جا جو جي
+</p>
+<button class="lesson-btn" onclick="startQuiz()">إكمال الدرس</button>
+</div>
 
-        <div id="chat-container">
-            <div class="message bot-msg">مرحباً بك! أنا الأستاذة نضيمة، كيف يمكنني مساعدتك اليوم في أمور دينك ودراستك؟</div>
-        </div>
+</div>
+</div>
 
-        <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="اكتب سؤالك هنا...">
-            <button class="chat-send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
-        </div>
-        
-        <p id="key-warning" style="color: red; font-size: 11px; text-align: center; margin-top: 10px; display: none;">يرجى وضع "مفتاح Gemini" في صفحة حسابي لكي أجيبك.</p>
-    </div>
+<!-- الاختبار -->
+<div id="quiz" class="app-page">
+<div class="card center">
+<h3 style="color:var(--green)">📝 اختبار قصير</h3>
+<p>👩‍🏫 <b>نضيمة:</b> اختر الإجابة الصحيحة</p>
 
-    <div id="profile" class="app-page">
-        <div style="background: var(--green-gradient); padding: 30px; border-radius: 20px; color: white; text-align: center;">
-            <h3>إعدادات الحساب</h3>
-        </div>
-        <div style="margin-top: 20px; background: white; padding: 20px; border-radius: 15px; box-shadow: var(--card-shadow);">
-            <label>اسم المستخدم:</label>
-            <input type="text" id="edit-name" oninput="saveData()" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd;">
-            
-            <label>مفتاح Gemini API:</label>
-            <input type="password" id="gemini-key" placeholder="أدخل المفتاح هنا" oninput="saveData()" style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 10px; border: 1px solid var(--primary-gold);">
-            <p style="font-size: 11px; color: #666;">يتم حفظ المفتاح في متصفحك فقط للأمان.</p>
-        </div>
-    </div>
+<p style="font-size:18px">الحرف (بَ) يُنطق:</p>
 
-    <nav class="bottom-nav" id="main-nav">
-        <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-moon"></i><span>الرئيسية</span></div>
-        <div class="nav-item" onclick="switchPage('noor', this)"><i class="fas fa-book-quran"></i><span>القاعدة</span></div>
-        <div class="nav-item" onclick="switchPage('ask', this)"><i class="fas fa-comment-dots"></i><span>اسألني</span></div>
-        <div class="nav-item" onclick="switchPage('profile', this)"><i class="fas fa-user-circle"></i><span>حسابي</span></div>
-    </nav>
+<button class="lesson-btn" onclick="checkAnswer(true)">بَ</button>
+<button class="lesson-btn" style="background:#aaa" onclick="checkAnswer(false)">بِ</button>
 
-    <script>
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active-page');
-            element.classList.add('active');
-        }
+<p id="quiz-result" style="margin-top:15px;font-size:16px"></p>
+</div>
+</div>
 
-        function enterApp() {
-            document.getElementById('landing').style.display = 'none';
-            document.getElementById('home').classList.add('active-page');
-            document.getElementById('main-nav').style.display = 'flex';
-        }
+<!-- المدرس -->
+<div id="teacher" class="app-page">
+<h2 class="center" style="color:var(--green)">اسأل المدرس</h2>
+<div class="chat-container" id="teacher-chat"></div>
+<input id="teacher-input" class="input-soft" placeholder="اكتب سؤالك...">
+<button class="lesson-btn" onclick="sendTeacher()">إرسال</button>
+</div>
 
-        function saveData() {
-            localStorage.setItem('userName', document.getElementById('edit-name').value);
-            localStorage.setItem('geminiKey', document.getElementById('gemini-key').value);
-        }
+<!-- المجيب -->
+<div id="ai" class="app-page">
+<h2 class="center" style="color:var(--green)">المجيب الآلي</h2>
+<div class="chat-container" id="ai-chat"></div>
+<input id="ai-input" class="input-soft" placeholder="اسألني أي شيء...">
+<button class="lesson-btn" onclick="sendAI()">إرسال</button>
+</div>
 
-        async function sendMessage() {
-            const input = document.getElementById('user-input');
-            const chatContainer = document.getElementById('chat-container');
-            const key = localStorage.getItem('geminiKey');
-            
-            if (!input.value.trim()) return;
-            if (!key) { document.getElementById('key-warning').style.display = 'block'; return; }
-            document.getElementById('key-warning').style.display = 'none';
+<!-- الملف الشخصي -->
+<div id="profile" class="app-page">
+<div class="card center">
+<h3>الملف الشخصي</h3>
 
-            // إضافة رسالة المستخدم
-            const userDiv = document.createElement('div');
-            userDiv.className = 'message user-msg';
-            userDiv.innerText = input.value;
-            chatContainer.appendChild(userDiv);
-            
-            const userText = input.value;
-            input.value = '';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+<div class="profile-img">
+<img id="profilePreview">
+</div>
 
-            // إضافة رسالة "جاري التفكير"
-            const botDiv = document.createElement('div');
-            botDiv.className = 'message bot-msg';
-            botDiv.innerText = 'أفكر...';
-            chatContainer.appendChild(botDiv);
+<input type="file" accept="image/*" class="input-soft" onchange="loadImage(event)">
+<input id="username" class="input-soft" placeholder="اسم الطالب">
+<input id="age" type="number" class="input-soft" placeholder="العمر">
+<textarea id="bio" class="input-soft" placeholder="وصف خاص" style="height:80px"></textarea>
 
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `أنت الأستاذة نضيمة مهيدي صالح، شخصية حكيمة، تربوية، وصبورة. أجيبي على هذا السؤال بأسلوبك الطيب: ${userText}` }] }] })
-                });
-                const data = await response.json();
-                botDiv.innerText = data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                botDiv.innerText = "عذراً، حدث خطأ. تأكد من صحة المفتاح أو الاتصال بالإنترنت.";
-            }
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+<button class="lesson-btn" onclick="saveProfile()">حفظ الملف الشخصي</button>
 
-        window.onload = function() {
-            document.getElementById('edit-name').value = localStorage.getItem('userName') || "";
-            document.getElementById('gemini-key').value = localStorage.getItem('geminiKey') || "";
-            setTimeout(() => {
-                document.getElementById('memorial-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('memorial-overlay').style.display = 'none', 1000);
-            }, 3000);
-        };
-    </script>
+<hr>
+
+<input id="api-key" type="password" class="input-soft" placeholder="مفتاح API (اختياري)">
+<button class="lesson-btn" style="background:linear-gradient(135deg,var(--gold),#b8963f)" onclick="saveKey()">حفظ الإعدادات</button>
+</div>
+</div>
+
+</div>
+
+<!-- القائمة السفلية -->
+<nav class="bottom-nav">
+<div class="nav-item active" onclick="switchPage('home',this)">الرئيسية</div>
+<div class="nav-item" onclick="switchPage('noorania',this)">القاعدة</div>
+<div class="nav-item" onclick="switchPage('teacher',this)">المدرس</div>
+<div class="nav-item" onclick="switchPage('ai',this)">المجيب</div>
+<div class="nav-item" onclick="switchPage('profile',this)">حسابي</div>
+</nav>
+
+<script>
+function switchPage(id,el){
+document.querySelectorAll('.app-page').forEach(p=>p.classList.remove('active-page'));
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+document.getElementById(id).classList.add('active-page');
+el.classList.add('active');
+}
+
+function startQuiz(){
+switchPage('quiz',document.querySelector('.nav-item'));
+}
+
+function checkAnswer(correct){
+let r=document.getElementById("quiz-result");
+if(correct){
+r.innerHTML="👩‍🏫 نضيمة: أحسنت 🌸 إجابة صحيحة، ننتقل للدرس التالي";
+r.style.color="green";
+}else{
+r.innerHTML="👩‍🏫 نضيمة: إجابة خطأ ❌ حاول مرة أخرى";
+r.style.color="red";
+}
+}
+
+function sendTeacher(){
+let i=teacher-input,c=teacher-chat;
+if(!i.value)return;
+c.innerHTML+=`<p><b>أنت:</b> ${i.value}</p>
+<p style="color:green"><b>نضيمة:</b> سيتم الرد قريبًا</p>`;
+i.value="";
+}
+
+function sendAI(){
+let i=ai-input,c=ai-chat;
+if(!i.value)return;
+c.innerHTML+=`<p><b>أنت:</b> ${i.value}</p>
+<p style="color:green"><b>أنجل 🤍:</b> رد تجريبي</p>`;
+i.value="";
+}
+
+function loadImage(e){
+profilePreview.src=URL.createObjectURL(e.target.files[0]);
+localStorage.setItem("profileImg",profilePreview.src);
+}
+
+function saveProfile(){
+localStorage.setItem("username",username.value);
+localStorage.setItem("age",age.value);
+localStorage.setItem("bio",bio.value);
+alert("تم حفظ الملف الشخصي ✅");
+}
+
+function saveKey(){
+localStorage.setItem("API_KEY",api-key.value);
+alert("تم حفظ الإعدادات ✅");
+}
+
+window.onload=()=>{
+username.value=localStorage.getItem("username")||"";
+age.value=localStorage.getItem("age")||"";
+bio.value=localStorage.getItem("bio")||"";
+if(localStorage.getItem("profileImg"))
+profilePreview.src=localStorage.getItem("profileImg");
+}
+</script>
+
 </body>
-</html>
-).style.display = 'none';
-
-            // إضافة رسالة المستخدم
-            const userDiv = document.createElement('div');
-            userDiv.className = 'message user-msg';
-            userDiv.innerText = input.value;
-            chatContainer.appendChild(userDiv);
-            
-            const userText = input.value;
-            input.value = '';
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-
-            // إضافة رسالة "جاري التفكير"
-            const botDiv = document.createElement('div');
-            botDiv.className = 'message bot-msg';
-            botDiv.innerText = 'أفكر...';
-            chatContainer.appendChild(botDiv);
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `أنت الأستاذة نضيمة مهيدي صالح، شخصية حكيمة، تربوية، وصبورة. أجيبي على هذا السؤال بأسلوبك الطيب: ${userText}` }] }] })
-                });
-                const data = await response.json();
-                botDiv.innerText = data.candidates[0].content.parts[0].text;
-            } catch (e) {
-                botDiv.innerText = "عذراً، حدث خطأ. تأكد من صحة المفتاح أو الاتصال بالإنترنت.";
-            }
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-
-        window.onload = function() {
-            document.getElementById('edit-name').value = localStorage.getItem('userName') || "";
-            document.getElementById('gemini-key').value = localStorage.getItem('geminiKey') || "";
-            setTimeout(() => {
-                document.getElementById('memorial-overlay').style.opacity = '0';
-                setTimeout(() => document.getElementById('memorial-overlay').style.display = 'none', 1000);
-            }, 3000);
-        };
-    </script>
-</body>
-</html>
-        .dua-text {
-            font-size: 15px;
-            color: #555;
-            line-height: 1.7;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 15px;
-            margin-top: 10px;
-        }
-
-        /* --- الزينة والأقسام --- */
-        .ramadan-decor { position: absolute; top: 0; width: 100%; height: 150px; pointer-events: none; z-index: 10; overflow: hidden; }
-        .lantern { position: absolute; top: -10px; color: var(--primary-gold); font-size: 25px; animation: swing 3s ease-in-out infinite; transform-origin: top center; }
-        .lantern.l1 { left: 10%; } .lantern.l2 { right: 10%; animation-delay: 0.5s; }
-        @keyframes swing { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-        
-        .moon-star { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: var(--primary-gold); font-size: 40px; animation: glow 2s ease-in-out infinite alternate; }
-        @keyframes glow { from { opacity: 0.5; transform: translateX(-50%) scale(1); } to { opacity: 1; transform: translateX(-50%) scale(1.1); } }
-
-        .app-page { display: none; padding: 20px; padding-bottom: 120px; animation: slideUp 0.5s ease; position: relative; }
-        .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: var(--white); display: none; justify-content: space-around; align-items: center; padding: 10px 5px; box-shadow: 0 15px 35px rgba(26, 71, 42, 0.15); border-radius: 25px; z-index: 1000; border: 1px solid rgba(197, 160, 89, 0.2); }
-        .nav-item { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border-radius: 20px; color: #888; transition: 0.4s; cursor: pointer; }
-        .nav-item.active { background: var(--green-gradient); color: var(--white); }
-        .nav-item.active span { display: inline-block; }
-        .nav-item span { display: none; font-size: 13px; font-weight: 700; }
-
-        .profile-header { background: var(--green-gradient); padding: 40px 20px; border-radius: 30px; color: white; text-align: center; }
-        .profile-img-box { position: relative; width: 120px; height: 120px; margin: 0 auto 15px; border: 4px solid var(--primary-gold); border-radius: 50%; padding: 4px; background: white; }
-        #profile-display { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        .avatar-grid { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
-        .avatar-option { width: 60px; height: 60px; border: 2px solid var(--primary-gold); border-radius: 12px; overflow: hidden; cursor: pointer; }
-        .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
-
-        .landing-screen { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; background: linear-gradient(rgba(26, 71, 42, 0.9), rgba(26, 71, 42, 0.9)), url('https://www.transparenttextures.com/patterns/islamic-art.png'); background-size: cover; color: white; text-align: center; }
-        #memorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 1s; }
-        .btn-luxury { background: var(--gold-gradient); color: white; border: none; padding: 12px 40px; border-radius: 50px; font-size: 18px; font-weight: 700; cursor: pointer; box-shadow: var(--btn-shadow); margin-top: 20px; }
-    </style>
-</head>
-<body>
-
-    <div id="memorial-overlay">
-        <div style="background: white; padding: 40px 20px; border-radius: 30px; text-align: center; max-width: 85%; border-top: 5px solid var(--primary-gold);">
-            <h3 style="font-family: 'Amiri';">﴿ كُلُّ نَفْسٍ ذَائِقَةُ الْمَوْتِ ﴾</h3>
-            <p>وقف على روح المرحوم <b>(سلام عبدلله جاسم)</b><br>وعن جميع موتى المسلمين.</p>
-        </div>
-    </div>
-
-    <div id="landing" class="landing-screen">
-        <h1 style="font-family: 'Amiri', serif; font-size: 42px;">تطبيق ألسلام</h1>
-        <button class="btn-luxury" onclick="enterApp()">دخول التطبيق</button>
-    </div>
-
-    <div id="home" class="app-page">
-        <div class="ramadan-decor">
-            <i class="fas fa-kaaba lantern l1"></i>
-            <i class="fas fa-fan lantern l2"></i>
-            <div class="moon-star"><i class="fas fa-moon"></i></div>
-        </div>
-
-        <h2 style="font-family: 'Amiri', serif; color: var(--deep-green); text-align: center; margin-top: 55px; margin-bottom: 25px;">رمضان مبارك</h2>
-        
-        <div style="background: white; padding: 15px; border-radius: 20px; box-shadow: var(--card-shadow); text-align: center; margin-bottom: 40px; border: 1px solid rgba(197, 160, 89, 0.1);">
-            تقبل الله طاعتكم يا <br>
-            <span id="user-name-display" style="color: var(--deep-green); font-weight: bold; font-size: 20px;">طالب علم</span>
-        </div>
-
-        <div class="host-container">
-            <img src="https://f.top4top.io/p_3707qsxv90.png" class="host-image" alt="أيقونة الأستاذة">
-            <div class="host-box">
-                <h4>سيتم استضافتكم من قبل الأستاذة</h4>
-                <span class="host-name">نضيمة مهيدي صالح</span>
-                <p class="dua-text">
-                    أسأل الله أن يكتب لها ولنا أجراً عظيماً. أسأل الله أن يتقبل منا ومنكم صالح الأعمال، وأن يجعلها في ميزان حسناتنا جميعاً، ويرزقنا وإياكم القبول والمغفرة والثواب العظيم في الدنيا والآخرة.
-                </p>
-                <i class="fas fa-star" style="position: absolute; bottom: 15px; right: 15px; color: var(--primary-gold); opacity: 0.2;"></i>
-                <i class="fas fa-star" style="position: absolute; bottom: 15px; left: 15px; color: var(--primary-gold); opacity: 0.2;"></i>
-            </div>
-        </div>
-    </div>
-
-    <div id="noor" class="app-page"><h2 style="text-align: center; font-family: 'Amiri';">القاعدة النورانية</h2></div>
-    <div id="ask" class="app-page"><h2 style="text-align: center; font-family: 'Amiri';">المجيب الآلي</h2></div>
-
-    <div id="profile" class="app-page">
-        <div class="profile-header">
-            <div class="profile-img-box">
-                <img id="profile-display" src="https://f.top4top.io/p_3707qcmf30.jpg">
-                <input type="file" id="img-upload" style="display:none" onchange="loadPhoto(event)">
-                <label for="img-upload" style="position:absolute; bottom:0; right:0; background:var(--primary-gold); width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; border:2px solid white;"><i class="fas fa-camera" style="color:white; font-size:12px;"></i></label>
-            </div>
-            <h3 id="display-name-label" style="margin:0;">طالب علم</h3>
-        </div>
-
-        <div class="avatar-selection">
-            <h4 style="text-align:center; color: var(--deep-green);">اختر رمزك الشخصي</h4>
-            <div class="avatar-grid">
-                <div class="avatar-option" onclick="setAvatar('https://f.top4top.io/p_3707qcmf30.jpg')"><img src="https://f.top4top.io/p_3707qcmf30.jpg"></div>
-                <div class="avatar-option" onclick="setAvatar('https://g.top4top.io/p_3707g8mi91.jpg')"><img src="https://g.top4top.io/p_3707g8mi91.jpg"></div>
-                <div class="avatar-option" onclick="setAvatar('https://h.top4top.io/p_3707e1sle2.jpg')"><img src="https://h.top4top.io/p_3707e1sle2.jpg"></div>
-                <div class="avatar-option" onclick="setAvatar('https://i.top4top.io/p_37079mwxf3.jpg')"><img src="https://i.top4top.io/p_37079mwxf3.jpg"></div>
-            </div>
-        </div>
-        
-        <div style="margin-top:20px; background:white; padding:15px; border-radius:15px; box-shadow: var(--card-shadow);">
-            <input type="text" id="edit-name" placeholder="الاسم الكريم" oninput="saveData()" style="width:100%; border:none; outline:none; font-family:'Tajawal'; text-align: center;">
-        </div>
-    </div>
-
-    <nav class="bottom-nav" id="main-nav">
-        <div class="nav-item active" onclick="switchPage('home', this)"><i class="fas fa-moon"></i><span>الرئيسية</span></div>
-        <div class="nav-item" onclick="switchPage('noor', this)"><i class="fas fa-book-quran"></i><span>القاعدة</span></div>
-        <div class="nav-item" onclick="switchPage('ask', this)"><i class="fas fa-comment-dots"></i><span>اسألني</span></div>
-        <div class="nav-item" onclick="switchPage('profile', this)"><i class="fas fa-user-circle"></i><span>حسابي</span></div>
-    </nav>
-
-    <script>
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active-page');
-            element.classList.add('active');
-        }
-
-        function enterApp() {
-            document.getElementById('landing').style.display = 'none';
-            document.getElementById('home').classList.add('active-page');
-            document.getElementById('main-nav').style.display = 'flex';
-        }
-
-        function setAvatar(url) {
-            document.getElementById('profile-display').src = url;
-            localStorage.setItem('userPhoto', url);
-        }
-
-        function saveData() {
-            let name = document.getElementById('edit-name').value;
-            localStorage.setItem('userName', name);
-            document.getElementById('user-name-display').innerText = name || "طالب علم";
-            document.getElementById('display-name-label').innerText = name || "طالب علم";
-        }
-
-        function loadPhoto(event) {
-            let reader = new FileReader();
-            reader.onload = function() {
-                document.getElementById('profile-display').src = reader.result;
-                localStorage.setItem('userPhoto', reader.result);
-            }
-            reader.readAsDataURL(event.target.files[0]);
-        }
-
-        window.onload = function() {
-            if(localStorage.getItem('userName')) {
-                let name = localStorage.getItem('userName');
-                document.getElementById('edit-name').value = name;
-                document.getElementById('user-name-display').innerText = name;
-                document.getElementById('display-name-label').innerText = name;
-            }
-            if(localStorage.getItem('userPhoto')) document.getElementById('profile-display').src = localStorage.getItem('userPhoto');
-
-            setTimeout(() => {
-                let overlay = document.getElementById('memorial-overlay');
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 1000);
-            }, 3000);
-        };
-    </script>
-</body>
-</html>
+    </html>
